@@ -60,6 +60,11 @@
     return sharedInstance;
 }
 
++ (NSString *)cleanSOAPElementName:(NSString *)elementName
+{
+    return [[elementName componentsSeparatedByString:@":"] lastObject];
+}
+
 - (id)init
 {
     if ((self = [super init]))
@@ -186,6 +191,8 @@
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
 {	
+    elementName = [self.class cleanSOAPElementName:elementName];
+
 	[self endText];
 	
 	NSMutableDictionary *node = [NSMutableDictionary dictionary];
@@ -294,6 +301,7 @@
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
 {	
+    elementName = [self.class cleanSOAPElementName:elementName];
 	[self endText];
     
     NSMutableDictionary *top = [_stack lastObject];
